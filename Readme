@@ -1,0 +1,16 @@
+This is the first submission of the decision tree algorithm.
+You can run the program by running the command:
+python main.py "folder_to_data"
+
+As of now there is support only to take input files, building the decision tree
+and printing the first feature, the rest will be added in the following commits to come.
+Code is well commented with meaningful variable names
+
+Features to add-
+1) Calculating and limiting the depth of the tree.
+2) Add support for cross validation.
+3) Option for changing the split criteria.
+4) Calculation of the accuracy.
+
+Enhancements-
+Better input handling using numpy
