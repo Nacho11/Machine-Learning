@@ -14,3 +14,42 @@ Features to add-
 
 Enhancements-
 Better input handling using numpy
+
+------------------------------------------------------------------------------
+
+Part 2 -
+
+Features Added -
+1) Size of the decision tree
+2) Stratified Cross Validation
+3) Accuracy
+4) Option for changing split criteria
+
+Features remaining To Add -
+1) Handling Continuous Features
+2) Depth of the tree
+
+Run the program by running the command:
+python main.py "folder_to_data"
+
+3 lines of output-
+1st line is the first feature
+2nd line is the accuracy
+3rd line is the size of the decision tree
+
+------------------------------------------------------------------------------
+
+Part 3 -
+
+Features Added -
+1) Handling Continuous Features
+2) Depth of the tree
+
+
+Run the program by running the command:
+python main.py "folder_to_data" crossvalidation max_depth split_criteria
+
+The names file should be in the following format-
+Index:Values,Feature1:continuous,Feature2:values and so on.
+
+It has to be mentioned that the feature is continuous.
