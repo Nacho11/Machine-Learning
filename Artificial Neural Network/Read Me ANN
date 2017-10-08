@@ -1,0 +1,24 @@
+1st Commit Features Added-
+Setting initial weights and biases
+Handling Discrete Features
+Forward Propagation
+Backward Propagation
+Computing Cost Function
+Stochastic Gradient Descent
+predictions
+Learning rate is coded to 0.01
+size of hidden layer is 3 // Can be changed in code need to add support to take from user
+number of iterations is 100 //Can be changed in code need to add support to take from user
+
+Remaining-
+Cross validation
+Weight decay coefficient
+Testing on all data sets
+
+Running - python main_ANN.py "voting"
+
+2nd Commit Features Added - 
+Cross Validation
+Weight Decay Coefficient
+Support to take size of hidden layers from user
+Support to take number of iterations from user
