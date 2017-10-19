@@ -81,6 +81,57 @@ def getAccuracy(true_values, predicted_values):
             correct += 1
     return correct/len(true_values)
 
+def getPrecision(true_values, predicted_values):
+    true_positive = 0
+    false_positive = 0
+    for i in range(0, len(true_values)):
+        if true_values[i] == 1 and predicted_values[i] == 1:
+            true_positive += 1
+        elif true_values[i] == 0 and predicted_values[i] == 1:
+            false_positive += 1
+    return true_positive / float(true_positive + false_positive)
+
+def getRecall(true_values, predicted_values):
+    true_positive = 0
+    false_negative = 0
+    for i in range(0, len(true_values)):
+        if true_values[i] == 1 and predicted_values[i] == 1:
+            true_positive += 1
+        elif true_values[i] == 1 and predicted_values[i] == 0:
+            false_negative += 1
+    return true_positive / float(true_positive + false_negative)
+
+def getROC(true_values, predicted_values):
+    false_positive = 0
+    true_positive = 0
+    true_negative = 0
+    false_negative = 0
+    sensitivities = []
+    specificities = []
+    for i in range(0, len(true_values)):
+        if true_values[i] == 1 and predicted_values[i] == 1:
+            true_positive += 1
+        elif true_values[i] == 1 and predicted_values[i] == 0:
+            false_positive += 1
+        elif true_values[i] == 0 and predicted_values[i] == 0:
+            true_negative += 1
+        elif true_values[i] == 0 and predicted_values[i] == 1:
+            false_negative += 1
+        if true_positive > 0:
+            sensitivity = true_positive / float(true_positive + false_negative)
+            sensitivities.append(sensitivity)
+        else:
+            sensitivities.append(0)
+        if false_positive > 0:
+            specificity = false_positive / float(false_positive + true_negative)+1
+            specificities.append(specificity)
+        else:
+            specificities.append(0)
+    ROC_values = []
+    for i in range(1, len(true_values)):
+        ROC_value = ((sensitivities[i-1] + sensitivities[i]) /2) * (specificities[i-1] - specificities[i])
+        ROC_values.append(ROC_value)
+    return sum(ROC_values) / len(ROC_values)
 
 #These are the different arguments taken from the user
 #Argument 1 will be the path to the data
@@ -121,47 +172,23 @@ for each_row in data_file:
         data.append(list_of_each_row[2:])
     else:
         data.append(list_of_each_row[1:])
-    count += 1
-    #if count == 100:
-        #break
 data.remove([])
-
-print features
-print data_type
 
 for each_feature in features:
     if data_type[features.index(each_feature)] == 'discrete':
-        #print each_feature
-        #print data[1]
         diff_values = getValues(data, features, each_feature)
-        #print diff_values
-        #diff_values = {'0': 1, '+': 2, '-': 3}
         data = changeDataToContinuousFeatures(data, features, each_feature, diff_values)
     else:
         data = convertToFloat(data, features, each_feature)
-#print data
-
-#print data
 
 np_data = np.array(data)
-print np_data
 np_data = np_data.transpose()
 input_data = np_data[1:-1,:]
-input_data = normalizeRows(input_data)
-
 labels = np.array([np_data[-1,:]])
 labels = np.array(labels)
-#print input_data.shape
-#print labels.shape
-#input_data = input_data.astype(int)
-#labels = labels.astype(int)
-#print input_data[:,1].astype(float)
-#print labels[:,1]
-#num_of_iterations = 10
-#size_of_hidden_layer = 4
-#weight_decay = 0.01
-
-cross_validation = '1'
+accuracy_values = []
+precision_values = []
+recall_values = []
 if cross_validation == '1':
     temp_dict = splitDataOnClass(data)
     data_split_on_class = []
@@ -171,60 +198,48 @@ if cross_validation == '1':
     data_set_split = []
     for each_split in data_split_on_class:
         data_set_split = createFolds(each_split, data_set_split, 5)
-    #print len(data_set_split)
-    #print data_set_split
+
     for i in range(0, len(data_set_split)):
-        #np_data = np.array(data_set_split)
-        #print np_data
-        #np_data = np_data.transpose()
-        #input_data = np_data[1:-1,:]
-        #input_data = normalizeRows(input_data)
-
-        #labels = np.array([np_data[-1,:]])
-        #labels = np.array(labels)
-        #print input_data.shape
-        #print labels.shape
-        #input_data = input_data.astype(int)
-        #labels = labels.astype(int)
-        #print data_set_split
-
         train_set = data_set_split[:]
 
-        #data_set_split = np.array(data_set_split).transpose()
-        #print test_set.shape
         test_set = np.array(train_set.pop(i))
         train_set = np.array(joinFolds(train_set))
         train_set = train_set.transpose()
         train_labels = np.array([train_set[-1,:]])
 
-        #print train_set.shape
         test_set = test_set.transpose()
         test_labels = np.array([test_set[-1,:]])
-        train_set = normalizeRows(train_set)
-        test_set = normalizeRows(test_set)
         train_set = train_set[1:-1,:]
-        #print train_set.shape
         test_set = test_set[1:-1,:]
-        #train_labels = np.array(data_set_split[-1,:])
-        #print train_labels.shape
-        print train_set.shape
-        print train_labels.shape
 
         parameters = ann_model(train_set, train_labels, size_of_hidden_layer, num_of_iterations, weight_decay)
         predictions = predict(parameters, test_set)
-        print predictions[0]
         converted_predictions = []
         for each_prediction in predictions[0]:
             if each_prediction == False:
                 converted_predictions.append(0)
             else:
                 converted_predictions.append(1)
-        print getAccuracy(test_labels[0], converted_predictions)
+        accuracy_values.append(getAccuracy(test_labels[0], converted_predictions))
+        precision_values.append(getPrecision(test_labels[0], converted_predictions))
+        recall_values.append(getRecall(test_labels[0], converted_predictions))
+        print accuracy_values
+        print precision_values
+        print recall_values
 else:
-    print input_data.shape
-    print labels.shape
     parameters = ann_model(input_data, labels, size_of_hidden_layer, num_of_iterations, weight_decay)
     predictions = predict(parameters, input_data)
     print predictions
-
+    converted_predictions = []
+    for each_prediction in predictions[0]:
+        if each_prediction == False:
+            converted_predictions.append(0)
+        else:
+            converted_predictions.append(1)
+    print labels
+    print converted_predictions
+    print getAccuracy(labels[0], converted_predictions)
+    print getPrecision(labels[0], converted_predictions)
+    print getRecall(labels[0], converted_predictions)
+    print getROC(labels[0], converted_predictions)
 #print parameters['W1']
