@@ -1,1 +1,6 @@
-This folder contains the Naive Bayes classifier. Right now it works for voting dataset need to add support for continuous features. 
+In this commit I have created the frequency_table and calculated the probability of class labels. Prepared data for cross_validation.
+In the next commit will complete the algorithm and add the logistic regression.
+
+———
+
+In this commit completed the naive bayes classifier and also added the logistic regression classifier. 
