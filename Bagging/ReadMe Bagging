@@ -1,0 +1,3 @@
+Features added - Bagging for all classifiers
+You can run the program with - python Bagging.py "data_set" 1 "classifier_name" iter_value
+ 

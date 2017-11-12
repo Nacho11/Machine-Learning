@@ -15,7 +15,7 @@ Cross validation
 Weight decay coefficient
 Testing on all data sets
 
-Running - python main_ANN.py "voting" cross_validation_value size_of_hidden_inputs weight_decay number_of_iterations 
+Running - python main_ANN.py "voting"
 
 2nd Commit Features Added - 
 Cross Validation
